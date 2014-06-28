@@ -51,6 +51,12 @@ public class StartAriadne extends Activity {
         Log.i("Location: ", latitude);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        setContentView(null);
+    }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -63,6 +69,7 @@ public class StartAriadne extends Activity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
 
             mAudioManager.playSoundEffect(Sounds.DISMISSED);
+
             this.finish();
         }
         return false;
