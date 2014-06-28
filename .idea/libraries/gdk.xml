@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="gdk">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/add-ons/gdk.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
