@@ -1,6 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".StartAriadne" >
+    <item android:id="@+id/action_return"
+        android:title="Return to Location"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
     <item android:id="@+id/action_stop"
         android:title="Dismiss"
         android:orderInCategory="100"
