@@ -27,6 +27,6 @@
         android:id="@+id/smallType"
         android:layout_marginLeft="260px"
         android:layout_alignBottom="@+id/locationImage"
-        android:layout_alignParentEnd="true" />
+        />
 
 </RelativeLayout>
