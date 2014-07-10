@@ -39,6 +39,9 @@ public class ariadneLiveCardService extends Service {
     public static LocationManager manager;
     public static AudioManager mAudioManager;
     private ariadnePopulateCard ariadnePopulate;
+    private RemoteViews ariadneCardRemote;
+    private static final int SPEECH_REQUEST = 0;
+    private String descrip;
 
 
 
@@ -47,6 +50,7 @@ public class ariadneLiveCardService extends Service {
         super.onCreate();
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
         //setContentView(R.layout.activity_start_ariadne);
 
     }
@@ -55,11 +59,24 @@ public class ariadneLiveCardService extends Service {
     public int onStartCommand(Intent intent, int flags, int startID) {
         if (liveCard == null) {
             liveCard = new LiveCard(this, LIVE_CARD_ID);
+            String latitude;
+            String longitude;
+            String location;
 
-            String latitude = String.valueOf(getLastLocation().getLatitude());
-            String longitude = String.valueOf(getLastLocation().getLongitude());
+            descrip = intent.getStringExtra("descrip");
 
-            String location = "Latitude: " + latitude + "\r\n" + "Longitude: " + longitude;
+            if(descrip == null) {
+
+                latitude = String.valueOf(getLastLocation().getLatitude());
+                longitude = String.valueOf(getLastLocation().getLongitude());
+
+                location = "Latitude: " + latitude + "\r\n" + "Longitude: " + longitude;
+            }
+            else {
+                latitude = intent.getStringExtra("latitude");
+                longitude = intent.getStringExtra("longitude");
+                location = descrip;
+            }
 
             ariadnePopulate = new ariadnePopulateCard();
             ariadnePopulate.execute(latitude,longitude,location);
@@ -68,6 +85,7 @@ public class ariadneLiveCardService extends Service {
             Intent menuIntent = new Intent(this, ariadneMenu.class);
             menuIntent.putExtra("latitude", latitude);
             menuIntent.putExtra("longitude", longitude);
+
             menuIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             liveCard.setAction(PendingIntent.getActivity(this, 100, menuIntent, 0));
             liveCard.publish(LiveCard.PublishMode.REVEAL);
@@ -119,7 +137,8 @@ public class ariadneLiveCardService extends Service {
         }
     }
 
-    private class ariadnePopulateCard extends AsyncTask<String, Void, Bitmap> {
+
+    public class ariadnePopulateCard extends AsyncTask<String, Void, Bitmap> {
         String latitude;
         String longitude;
         String location;
@@ -154,9 +173,13 @@ public class ariadneLiveCardService extends Service {
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            RemoteViews ariadneCardRemote = new RemoteViews(getPackageName(), R.layout.activity_start_ariadne);
+            ariadneCardRemote = new RemoteViews(getPackageName(), R.layout.activity_start_ariadne);
             if (bitmap != null) ariadneCardRemote.setImageViewBitmap(R.id.locationImage, bitmap);
             ariadneCardRemote.setTextViewText(R.id.locationText, location);
+
+            if(descrip != null) {
+                ariadneCardRemote.setTextViewText(R.id.smallType, "lat:" + latitude + "\r\n" + "lon:" + longitude);
+            }
 
             liveCard.setViews(ariadneCardRemote);
 

@@ -31,16 +31,22 @@ public class ariadneMenu extends Activity {
         Bundle bundle = getIntent().getExtras();
         String latitude = bundle.getString("latitude");
         String longitude = bundle.getString("longitude");
-
+        Intent intent;
         // Handle item selection.
 
         switch (item.getItemId()) {
+
             case R.id.action_return:
-                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse("google.navigation:q=" + latitude + "," + longitude + "&mode=w"));
                 startActivity(intent);
                 stopService(new Intent(this, ariadneLiveCardService.class));
                 return true;
+            case R.id.action_description:
+                intent = new Intent(this, ariadneDictate.class);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
+                startActivity(intent);
             case R.id.action_stop:
                 stopService(new Intent(this, ariadneLiveCardService.class));
                 return true;

@@ -5,6 +5,10 @@
         android:title="Return to Location"
         android:orderInCategory="100"
         android:showAsAction="never" />
+    <item android:id="@+id/action_description"
+        android:title="Add a Description"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
     <item android:id="@+id/action_stop"
         android:title="Dismiss"
         android:orderInCategory="100"
