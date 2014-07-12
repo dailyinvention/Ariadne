@@ -4,13 +4,16 @@
     <item android:id="@+id/action_return"
         android:title="Return to Location"
         android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:showAsAction="never"
+        android:icon="@drawable/ic_return" />
     <item android:id="@+id/action_description"
         android:title="Add a Description"
         android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:showAsAction="never"
+        android:icon="@drawable/ic_read_aloud" />
     <item android:id="@+id/action_stop"
         android:title="Dismiss"
         android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:showAsAction="never"
+        android:icon="@drawable/ic_stop" />
 </menu>

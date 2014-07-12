@@ -4,6 +4,6 @@
     <string name="app_name">Ariadne</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="glass_voice_trigger">save my location</string>
+    <string name="glass_voice_trigger">save a location</string>
 
 </resources>
