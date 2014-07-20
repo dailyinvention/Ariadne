@@ -9,9 +9,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -39,8 +41,11 @@ public class ariadneLiveCardService extends Service {
     public static LocationManager manager;
     public static AudioManager mAudioManager;
     private ariadnePopulateCard ariadnePopulate;
-    private RemoteViews ariadneCardRemote;
+    public RemoteViews ariadneCardRemote;
     private String descrip;
+    private String latitude;
+    private String longitude;
+    private String location;
 
 
 
@@ -57,18 +62,17 @@ public class ariadneLiveCardService extends Service {
 
         if (liveCard == null) {
             liveCard = new LiveCard(this, LIVE_CARD_ID);
-            String latitude;
-            String longitude;
-            String location;
+
 
             descrip = intent.getStringExtra("descrip");
+
 
             if(descrip == null) {
 
                 latitude = String.valueOf(getLastLocation().getLatitude());
                 longitude = String.valueOf(getLastLocation().getLongitude());
-
                 location = "Latitude: " + latitude + "\r\n" + "Longitude: " + longitude;
+
             }
             else {
                 latitude = intent.getStringExtra("latitude");
@@ -76,17 +80,23 @@ public class ariadneLiveCardService extends Service {
                 location = descrip;
             }
 
-            ariadnePopulate = new ariadnePopulateCard();
-            ariadnePopulate.execute(latitude,longitude,location);
+
+            if ((latitude != null) && (longitude != null)) {
+                ariadnePopulate = new ariadnePopulateCard();
+                ariadnePopulate.execute(latitude, longitude, location);
 
 
-            Intent menuIntent = new Intent(this, ariadneMenu.class);
-            menuIntent.putExtra("latitude", latitude);
-            menuIntent.putExtra("longitude", longitude);
+                Intent menuIntent = new Intent(this, ariadneMenu.class);
+                menuIntent.putExtra("latitude", latitude);
+                menuIntent.putExtra("longitude", longitude);
 
-            menuIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            liveCard.setAction(PendingIntent.getActivity(this, 100, menuIntent, 0));
-            liveCard.publish(LiveCard.PublishMode.REVEAL);
+                menuIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                liveCard.setAction(PendingIntent.getActivity(this, 100, menuIntent, 0));
+                liveCard.publish(LiveCard.PublishMode.REVEAL);
+            }
+            else {
+                displayGPSError();
+            }
 
 
         }
@@ -102,6 +112,9 @@ public class ariadneLiveCardService extends Service {
       }
 
       ariadneCardRemote = null;
+      latitude = null;
+      longitude = null;
+      location = null;
       super.onDestroy();
     }
 
@@ -112,18 +125,53 @@ public class ariadneLiveCardService extends Service {
         return null;
     }
 
+
     public static Location getLastLocation() {
+
 
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.NO_REQUIREMENT);
         List<String> providers = manager.getProviders(criteria, true);
         List<Location> locations = new ArrayList<Location>();
+
+        LocationListener locationListen = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
         for (String provider : providers) {
+
+
+            manager.requestLocationUpdates(
+                    provider,
+                    10,
+                    0, locationListen );
+
             Location location = manager.getLastKnownLocation(provider);
             if (location != null && location.getAccuracy() != 0.0) {
                 locations.add(location);
             }
+
+
         }
+
         Collections.sort(locations, new Comparator<Location>() {
             @Override
             public int compare(Location location, Location location2) {
@@ -135,6 +183,7 @@ public class ariadneLiveCardService extends Service {
         }
         else {
             return null;
+
         }
     }
 
@@ -187,6 +236,12 @@ public class ariadneLiveCardService extends Service {
             AudioManager audio = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
             audio.playSoundEffect(Sounds.SUCCESS);
         }
+    }
+
+    public void displayGPSError() {
+        ariadneCardRemote = new RemoteViews(getPackageName(), R.layout.connection_error_ariadne);
+        liveCard.setViews(ariadneCardRemote);
+        liveCard.publish(LiveCard.PublishMode.REVEAL);
     }
 
 
