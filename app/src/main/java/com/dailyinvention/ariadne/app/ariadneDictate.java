@@ -19,6 +19,8 @@ public class ariadneDictate extends Activity  {
     private static Intent intent;
     private String latitude;
     private String longitude;
+    private String spokenText;
+    private int keyCode;
 
     public void onCreate(Bundle bundle) {
 
@@ -37,21 +39,27 @@ public class ariadneDictate extends Activity  {
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
+        Intent serviceIntent = new Intent(this, ariadneLiveCardService.class);
         if (requestCode == SPEECH_REQUEST && resultCode == RESULT_OK) {
             List<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
-            String spokenText = results.get(0);
+            spokenText = results.get(0);
 
             //ariadneCardRemote.setTextViewText(R.id.locationText, spokenText);
             //ariadneLiveCardService.ariadnePopulateCard(latitude,longitude,spokenText);
-            Intent serviceIntent = new Intent(this, ariadneLiveCardService.class);
             serviceIntent.putExtra("latitude", latitude);
             serviceIntent.putExtra("longitude", longitude);
             serviceIntent.putExtra("descrip", spokenText);
             startService(serviceIntent);
 
-
             Log.i("Text Returned:", spokenText);
+        }
+        else if (requestCode == SPEECH_REQUEST && resultCode == RESULT_CANCELED) {
+
+            serviceIntent.putExtra("latitude", latitude);
+            serviceIntent.putExtra("longitude", longitude);
+            startService(serviceIntent);
+            //finish();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
