@@ -40,7 +40,6 @@ public class ariadneLiveCardService extends Service {
     public static AudioManager mAudioManager;
     private ariadnePopulateCard ariadnePopulate;
     private RemoteViews ariadneCardRemote;
-    private static final int SPEECH_REQUEST = 0;
     private String descrip;
 
 
@@ -51,12 +50,11 @@ public class ariadneLiveCardService extends Service {
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-        //setContentView(R.layout.activity_start_ariadne);
-
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
+
         if (liveCard == null) {
             liveCard = new LiveCard(this, LIVE_CARD_ID);
             String latitude;
@@ -106,6 +104,7 @@ public class ariadneLiveCardService extends Service {
     }
 
 
+
     public IBinder onBind(Intent arg0) {
 
         return null;
@@ -152,7 +151,7 @@ public class ariadneLiveCardService extends Service {
             try {
 
 
-                URL staticMapUrl = new URL("http://maps.googleapis.com/maps/api/staticmap?center=" + latitude + "," + longitude + "&zoom=16&size=240x360&maptype=terrain&format=png&zoom=16&scale=2&style=feature:all%7Celement:labels.text.fill%7Cvisibility:off&style=feature:all%7Celement:labels.text.stroke%7Ccolor:0xFFFFFF&style=feature:road%7Celement:geometry%7Ccolor:0x4f4f4f%7Cweight:2%7Cvisibility:on&style=feature:landscape%7Celement:geometry.fill%7Ccolor:0x0f0f0f&style=feature:poi%7Celement:geometry.fill%7Ccolor:0x2f2f2f&style=feature:poi.park%7Celement:geometry.fill%7Ccolor:0x006600&markers=color:red|" + latitude + "," + longitude);
+                URL staticMapUrl = new URL("http://maps.googleapis.com/maps/api/staticmap?center=" + latitude + "," + longitude + "&zoom=17&size=240x360&maptype=terrain&format=png&scale=2&style=feature:all%7Celement:labels.text.fill%7Cvisibility:off&style=feature:all%7Celement:labels.text.stroke%7Ccolor:0xFFFFFF&style=feature:road%7Celement:geometry%7Ccolor:0x4f4f4f%7Cweight:2%7Cvisibility:on&style=feature:landscape%7Celement:geometry.fill%7Ccolor:0x0f0f0f&style=feature:poi%7Celement:geometry.fill%7Ccolor:0x2f2f2f&style=feature:poi.park%7Celement:geometry.fill%7Ccolor:0x006600&markers=color:red|" + latitude + "," + longitude);
                 InputStream stream = staticMapUrl.openStream();
                 BufferedInputStream bufferedStream = new BufferedInputStream(stream);
 

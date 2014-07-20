@@ -11,7 +11,6 @@ import android.view.MenuItem;
 public class ariadneMenu extends Activity {
 
 
-
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -32,6 +31,7 @@ public class ariadneMenu extends Activity {
         String latitude = bundle.getString("latitude");
         String longitude = bundle.getString("longitude");
         Intent intent;
+
         // Handle item selection.
 
         switch (item.getItemId()) {
@@ -47,6 +47,7 @@ public class ariadneMenu extends Activity {
                 intent.putExtra("latitude", latitude);
                 intent.putExtra("longitude", longitude);
                 startActivity(intent);
+                return true;
             case R.id.action_stop:
                 stopService(new Intent(this, ariadneLiveCardService.class));
                 return true;
