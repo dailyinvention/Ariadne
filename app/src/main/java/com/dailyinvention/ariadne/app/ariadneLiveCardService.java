@@ -100,6 +100,8 @@ public class ariadneLiveCardService extends Service {
               liveCard = null;
           }
       }
+
+      ariadneCardRemote = null;
       super.onDestroy();
     }
 
