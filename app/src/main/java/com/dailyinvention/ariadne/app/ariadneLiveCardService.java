@@ -81,7 +81,6 @@ public class ariadneLiveCardService extends Service {
             }
 
 
-            if ((latitude != null) && (longitude != null)) {
                 ariadnePopulate = new ariadnePopulateCard();
                 ariadnePopulate.execute(latitude, longitude, location);
 
@@ -93,10 +92,6 @@ public class ariadneLiveCardService extends Service {
                 menuIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 liveCard.setAction(PendingIntent.getActivity(this, 100, menuIntent, 0));
                 liveCard.publish(LiveCard.PublishMode.REVEAL);
-            }
-            else {
-                displayGPSError();
-            }
 
 
         }
@@ -236,12 +231,6 @@ public class ariadneLiveCardService extends Service {
             AudioManager audio = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
             audio.playSoundEffect(Sounds.SUCCESS);
         }
-    }
-
-    public void displayGPSError() {
-        ariadneCardRemote = new RemoteViews(getPackageName(), R.layout.connection_error_ariadne);
-        liveCard.setViews(ariadneCardRemote);
-        liveCard.publish(LiveCard.PublishMode.REVEAL);
     }
 
 
